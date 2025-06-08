@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wordle Pattern</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 20px;
+    }
+
+    table {
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    td {
+      width: 50px;
+      height: 50px;
+      border: 1px solid #ccc;
+      cursor: pointer;
+      color: white;
+      font-size: 24px;
+      text-align: center;
+      font-width: bold;
+    }
+    .data {
+      background-color: grey;
+    }
+
+    .left-arrow {
+      background-image: url('/static/arrow.png');
+      background-size: cover;
+      filter: sepia(1) hue-rotate(200deg) saturate(4);
+      transform: rotate(180deg);
+      border: none;
+    }
+    .right-arrow {
+      background-image: url('/static/arrow.png');
+      background-size: cover;
+      border: none;
+    }
+
+    .green {
+      background-color: green;
+    }
+    input[type="text"] {
+      width: 200px;
+      padding: 10px;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button.clear-button {
+      background-color: #dc3545;
+      margin-top: 10px;
+    }
+    button.clear-button:hover {
+      background-color: #c82333;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .instructions {
+      margin: 20px;
+      font-size: 18px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+  <input type="text" id="wordle" placeholder="Type wordle answer of today...">
+  <button type="submit" onclick="getAnswer()">Search</button>
+  <div class="instructions">Draw a pattern here...</div>
+  <table class="wordle_table" onclick="changeClass(event)">
+    <tbody id="result">
+      <tr>
+        <td class="left-arrow 0"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 0"></td>
+      </tr>
+      <tr>
+        <td class="left-arrow 1"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 1"></td>
+      </tr>
+      <tr>
+        <td class="left-arrow 2"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 2"></td>
+      </tr>
+      <tr>
+        <td class="left-arrow 3"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 3"></td>
+      </tr>
+      <tr>
+        <td class="left-arrow 4"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 4"></td>
+      </tr>
+      <tr>
+        <td class="left-arrow 5"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="data"></td>
+        <td class="right-arrow 5"></td>
+      </tr>
+    </tbody>
+  </table>
+  <button type="submit" class="clear-button">Clear</button>
+
+  <script>
+    function clear() {
+      console.log("clearing");
+      const cells = document.querySelectorAll("td.data");
+      cells.forEach(cell => {
+        cell.classList.remove("green");
+        cell.textContent = "";
+      });
+      global_answers = []
+      for (let i = 0; i < 6; i++) {
+        global_answers.push({ "curr_index": 0, "list": [] });
+      }
+      render();
+      document.getElementById("wordle").value = "";
+    }
+
+    document.querySelector(".clear-button").addEventListener("click", clear);
+
+    function changeClass(event) {
+      const cell = event.target.closest("td");
+      if (!cell || !wordle) return; 
+      if (cell.classList.contains("left-arrow")) {
+        const index = parseInt(cell.classList[1]);
+        if (global_answers[index].curr_index > 0) {
+          global_answers[index].curr_index--;
+          render();
+        }
+      } 
+      else if (cell.classList.contains("right-arrow")) {
+        const index = parseInt(cell.classList[1]);
+        if (global_answers[index].curr_index < global_answers[index].list.length - 1) {
+          global_answers[index].curr_index++;
+          render();
+        }
+      } 
+      else  cell.classList.toggle("green");
+    }
+
+    var global_answers = [
+      { "curr_index":0 , "list": []},
+      { "curr_index":0 , "list": []},
+      { "curr_index":0 , "list": []},
+      { "curr_index":0 , "list": []},
+      { "curr_index":0 , "list": []},
+      { "curr_index":0 , "list": []},
+    ]
+    
+    function render() {
+      let rows = document.querySelectorAll("tr");
+      rows.forEach((row, rowIndex) => {
+        let cells = row.querySelectorAll("td.data");
+        cells.forEach((cell, cellIndex) => {
+          if (global_answers[rowIndex].list.length > 0) {
+            cell.textContent = global_answers[rowIndex].list[global_answers[rowIndex].curr_index][cellIndex];
+          } else {
+            cell.textContent = "";
+          }
+        });
+      });
+    }
+
+    function getAnswer() {
+    
+      const cells = result.querySelectorAll("td.data");
+      let wordle = document.getElementById("wordle").value.trim().toLowerCase();
+      if (!wordle) {
+        alert("Please enter a word.");
+        return;
+      }
+
+      if (wordle.length !== 5) {
+        alert("Please enter a 5-letter word.");
+        return;
+      }
+
+      // slice cells into groups of 5
+      const groups = [];
+      for (let i = 0; i < cells.length; i += 5) {
+        groups.push(Array.from(cells).slice(i, i + 5));
+      }
+
+      let pattern = [];
+      groups.forEach((group, index) => {
+        let t = ""
+        group.forEach((cell, cellIndex) => {
+          if (cell.classList.contains("green")) {
+            t += "#";
+          }  else {
+            t += ".";
+          }
+        });
+        pattern.push(t);
+      });
+
+      let request = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          wordle: wordle,
+          pattern: pattern.join(",")
+        })
+      }
+      let url = "./api/wordle";
+      fetch(url, request)
+        .then(response => response.json())
+        .then(data => {
+          console.log(data);
+          for (let i = 0; i < 6; i++) {
+            global_answers[i].list = data[pattern[i]];
+            global_answers[i].curr_index = 0;
+          }
+          render();
+          // if (data.success) {
+          //   alert("Pattern sent successfully!");
+          // } else {
+          //   console.log(data);
+          //   alert("Error: " + data.message);
+          // }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("An error occurred while sending the pattern.");
+        });
+    };
+  </script>
+</body>
+
+</html>
