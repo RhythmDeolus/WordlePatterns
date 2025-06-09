@@ -38,5 +38,4 @@ def static_files(path):
     
 if __name__ == '__main__':
     port_value = int(os.getenv('PORT', 5000))
-    app.run(port=port_value) 
-app= app
+    app.run(host="0.0.0.0", port=port_value) 
