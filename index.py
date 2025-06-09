@@ -1,4 +1,5 @@
 import flask
+import os
 app = flask.Flask(__name__)
 
 from main import get_answer
@@ -36,4 +37,6 @@ def static_files(path):
     return flask.send_from_directory('static', path)
     
 if __name__ == '__main__':
-    app.run(debug=True, port=5000, host='localhost')
+    port_value = int(os.getenv('PORT', 5000))
+    app.run(port=port_value) 
+app= app
