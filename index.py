@@ -24,7 +24,7 @@ def wordle():
     pattern = pattern.split(',')
 
     try:
-        answer = get_answer(pattern, wordle)
+        answer = get_answer(pattern, wordle, limit=10)
         # print("Answer:", answer)
         return flask.jsonify(answer)
     except Exception as e:
